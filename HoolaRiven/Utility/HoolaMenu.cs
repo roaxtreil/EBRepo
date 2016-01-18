@@ -1,4 +1,5 @@
-﻿using EloBuddy.SDK.Menu;
+﻿using EloBuddy;
+using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 namespace HoolaRiven.Utility
 {
@@ -53,8 +54,8 @@ namespace HoolaRiven.Utility
             MiscMenu.Add("AutoShield", new CheckBox("Auto E Shield"));
             MiscMenu.Add("Shield", new CheckBox("Auto E in lasthit mode"));
             MiscMenu.Add("KeepQ", new CheckBox("Keep Q alive"));
-            MiscMenu.Add("QD", new Slider("First and second Q Delay", 29, 23, 43));
-            MiscMenu.Add("QLD", new Slider("Third Q Delay", 39, 36, 53));
+            MiscMenu.Add("QD", new Slider("First and second Q Delay", Game.Ping));
+            MiscMenu.Add("QLD", new Slider("Third Q Delay", Game.Ping));
         }
     }
 }
