@@ -190,9 +190,8 @@ namespace HoolaLucian
                             EntityManager.UnitTeam.Enemy, Player.Position, Player.GetAutoAttackRange())
                             .OrderByDescending(i => i.Health).ToList();
                     if (Minions[0].IsValid && Minions.Count != 0)
-                    {
-                        if (!Getkeybindvalue(Laneclear, "LT")) return;
-
+                    {                       
+						if (Getkeybindvalue(Laneclear, "LT")){
                         if (E.IsReady() && !AAPassive && Getcheckboxvalue(Laneclear, "LE")) EloBuddy.Player.CastSpell(SpellSlot.E, Player.Position.Extend(Game.CursorPos, 70));
                         if (Q.IsReady() && (!E.IsReady() || (E.IsReady() && !Getcheckboxvalue(Laneclear, "LE"))) && Getslidervalue(Laneclear, "LQ") != 0 && !AAPassive)
                         {
@@ -211,7 +210,8 @@ namespace HoolaLucian
                             }
                         }
                         if ((!E.IsReady() || (E.IsReady() && !Getcheckboxvalue(Laneclear, "LE"))) && (!Q.IsReady() || (Q.IsReady() && Getslidervalue(Laneclear, "LQ") == 0)) && Getcheckboxvalue(Laneclear, "LW") && W.IsReady() && !AAPassive) W.Cast(Minions[0].Position);
-                    }
+                       }
+					}
                 }
             }
         }
