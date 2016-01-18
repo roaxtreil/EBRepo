@@ -1000,14 +1000,11 @@ namespace HoolaRiven
         private static void FlashW()
         {
             var target = TargetSelector.SelectedTarget;
-            if (target != null && target.IsValidTarget() && !target.IsZombie)
-            {
                 Orbwalker.ForcedTarget = target;
                 Orbwalker.OrbwalkTo(target.ServerPosition);
                 W.Cast();
-                
-                Core.DelayAction(() => Player.Spellbook.CastSpell(Flash.Slot, target.ServerPosition), 10);               
-            }
+             Core.DelayAction(() => Player.Spellbook.CastSpell(Flash.Slot, target.ServerPosition), 10);               
+            
         }
 
         private static double Rdame(Obj_AI_Base target, double health)

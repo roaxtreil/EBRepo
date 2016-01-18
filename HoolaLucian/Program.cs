@@ -253,7 +253,7 @@ namespace HoolaLucian
             }
             if (args.Target is Obj_AI_Minion && args.Target.IsValid)
             {
-                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
                 {
                     var Mobs =
                         EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange())
