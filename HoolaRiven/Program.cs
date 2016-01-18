@@ -66,7 +66,7 @@ namespace HoolaRiven
             var slot = Player.GetSpellSlotFromName("summonerflash");
             if (slot != SpellSlot.Unknown)
             {
-                Flash = new Spell.Skillshot(slot, 450, SkillShotType.Linear, 0, int.MaxValue, 55);
+                Flash = new Spell.Skillshot(slot, 450, SkillShotType.Linear, 0, int.MaxValue, 55) {AllowedCollisionCount = Int32.MaxValue};
             }
 
             HoolaMenu.InitializeMenu();
@@ -495,7 +495,7 @@ namespace HoolaRiven
 
         private static void Burst()
         {
-            var target = TargetSelector.GetTarget(1500, DamageType.Physical);
+            var target = TargetSelector.SelectedTarget;
             if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
                 Orbwalker.ForcedTarget = target;
@@ -506,7 +506,9 @@ namespace HoolaRiven
                     E.Cast(target.Position);
                     CastYoumuu();
                     ForceR();
+                    if (InWRange(target)) {
                     Core.DelayAction(ForceW, 100);
+                    }
                 }
                 else if (R.IsReady() && R.Name == IsFirstR && E.IsReady() && W.IsReady() && Q.IsReady() &&
                          Player.Distance(target.Position) <= 400 + 70 + Player.AttackRange)
@@ -515,7 +517,10 @@ namespace HoolaRiven
                     CastYoumuu();
                     ForceR();
                     Core.DelayAction(() => ForceCastQ(target), 150);
-                    Core.DelayAction(ForceW, 160);
+                    if (InWRange(target))
+                    {
+                        Core.DelayAction(ForceW, 160);
+                    }
                 }
                 else if (FlashIsReady
                          && R.IsReady() && R.Name == IsFirstR && (Player.Distance(target.Position) <= 800) &&
@@ -995,13 +1000,13 @@ namespace HoolaRiven
         private static void FlashW()
         {
             var target = TargetSelector.SelectedTarget;
-            if (target == null || !target.IsValidTarget())
-                target = TargetSelector.GetTarget(450 + Player.AttackRange + 70, DamageType.Physical);
-            if (target == null || !target.IsValidTarget()) return;
-            if (target.IsValidTarget() && !target.IsZombie)
+            if (target != null && target.IsValidTarget() && !target.IsZombie)
             {
+                Orbwalker.ForcedTarget = target;
+                Orbwalker.OrbwalkTo(target.ServerPosition);
                 W.Cast();
-                Core.DelayAction(() => Flash.Cast(target.Position), 10);
+                
+                Core.DelayAction(() => Player.Spellbook.CastSpell(Flash.Slot, target.ServerPosition), 10);               
             }
         }
 
