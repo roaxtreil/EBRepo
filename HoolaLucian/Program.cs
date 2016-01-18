@@ -183,7 +183,7 @@ namespace HoolaLucian
             AAPassive = false;
             if (args.Target is Obj_AI_Minion && args.Target.IsValid)
             {
-                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear) && Player.ManaPercent > Getslidervalue(Laneclear, "LMinMana"))
+                if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear) && Player.ManaPercent >= Getslidervalue(Laneclear, "LMinMana"))
                 {             
                     var Minions =
                         EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Both,
@@ -256,8 +256,7 @@ namespace HoolaLucian
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
                 {
                     var Mobs =
-                        EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Both,
-                            EntityManager.UnitTeam.Enemy, Player.Position, Player.GetAutoAttackRange())
+                        EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange())
                             .OrderByDescending(i => i.MaxHealth).ToList();
                     if (Mobs[0].IsValid && Mobs.Count != 0)
                     {
@@ -292,9 +291,7 @@ namespace HoolaLucian
         }
         static void LaneClear()
         {
-            if (Player.ManaPercent < Getslidervalue(Laneclear, "LMinMana")) return;
-
-            if (Q.IsReady() && Getcheckboxvalue(Laneclear, "LHQ"))
+            if (Q.IsReady() && Getcheckboxvalue(Laneclear, "LHQ") && Player.ManaPercent >= Getslidervalue(Laneclear, "LMinMana"))
             {
                 var extarget = TargetSelector.GetTarget(Q1.Range, DamageType.Physical);
                 var Minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
@@ -336,7 +333,7 @@ namespace HoolaLucian
         static void UseRTarget()
         {
             var target = TargetSelector.GetTarget(R.Range, DamageType.Physical);
-            if (Getkeybindvalue(Combo, "ForceR") && R.IsReady() && target.IsValid && target is AIHeroClient && !Player.HasBuff("LucianR")) R.Cast(target.Position);
+            if (Getkeybindvalue(Combo, "ForceR") && R.IsReady() && target.IsValid && !Player.HasBuff("LucianR")) R.Cast(target.Position);
         }
         static void Game_OnUpdate(EventArgs args)
         {
@@ -394,7 +391,7 @@ namespace HoolaLucian
                 foreach (
                     var enemy in
                         ObjectManager.Get<AIHeroClient>()
-                            .Where(ene => ene.IsValidTarget() && !ene.IsZombie && ene.IsEnemy))
+                            .Where(ene => ene.IsValidTarget() && !ene.IsZombie))
                 {
                     Indicator.unit = enemy;
                     Indicator.drawDmg(getComboDamage(enemy), new ColorBGRA(255, 204, 0, 160));
