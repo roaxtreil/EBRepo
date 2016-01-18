@@ -16,7 +16,7 @@ namespace HoolaRiven
         private static readonly AIHeroClient Player = ObjectManager.Player;
         private static readonly Spell.Active Q = new Spell.Active(SpellSlot.Q);
         private static readonly Spell.Active W = new Spell.Active(SpellSlot.W);
-        private static readonly Spell.Active E = new Spell.Active(SpellSlot.E, 300);
+        private static readonly Spell.Targeted E = new Spell.Targeted(SpellSlot.E, 300);
         private static readonly Spell.Skillshot R = new Spell.Skillshot(SpellSlot.R, 900, SkillShotType.Cone, 250, 1600,
             45)
         {
@@ -205,7 +205,7 @@ namespace HoolaRiven
             {
                 if (!InWRange(targetR))
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, targetR.Position);
+                    E.Cast(targetR.Position);
                     ForceR();
                     Core.DelayAction(ForceW, 200);
                     Core.DelayAction(() => ForceCastQ(targetR), 305);
@@ -217,7 +217,7 @@ namespace HoolaRiven
             {
                 if (!InWRange(targetR))
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, targetR.Position);
+                    E.Cast(targetR.Position);
                     ForceR();
                     Core.DelayAction(ForceW, 200);
                 }
@@ -226,7 +226,7 @@ namespace HoolaRiven
             {
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, targetR.Position);
+                    E.Cast(targetR.Position);
                     Core.DelayAction(ForceItem, 10);
                     Core.DelayAction(ForceW, 200);
                     Core.DelayAction(() => ForceCastQ(targetR), 305);
@@ -237,7 +237,7 @@ namespace HoolaRiven
             {
                 if (targetR.IsValidTarget() && targetR != null && !targetR.IsZombie && !InWRange(targetR))
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, targetR.Position);
+                    E.Cast(targetR.Position);
                     Core.DelayAction(ForceItem, 10);
                     Core.DelayAction(ForceW, 240);
                 }
@@ -246,7 +246,7 @@ namespace HoolaRiven
             {
                 if (targetR.IsValidTarget() && !targetR.IsZombie && !InWRange(targetR))
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, targetR.Position);
+                    E.Cast(targetR.Position);
                 }
             }
         }
@@ -297,7 +297,7 @@ namespace HoolaRiven
                          Minions.Count() < HoolaMenu.SliderValue(HoolaMenu.LaneClear, "LaneW")) &&
                         E.IsReady() && HoolaMenu.BoolValue(HoolaMenu.LaneClear, "LaneE"))
                     {
-                        EloBuddy.Player.CastSpell(SpellSlot.E, Minions[0].Position);
+                        E.Cast(Minions[0].Position);
                         Core.DelayAction(ForceItem, 1);
                     }
                 }
@@ -325,7 +325,7 @@ namespace HoolaRiven
                                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit) &&
                                     !args.SData.Name.Contains("NasusW"))
                                 {
-                                    if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                                    if (E.IsReady()) E.Cast(epos);
                                 }
                             }
 
@@ -334,7 +334,7 @@ namespace HoolaRiven
 
                             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit))
                             {
-                                if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                                if (E.IsReady()) E.Cast(epos);
                             }
 
                             break;
@@ -344,7 +344,7 @@ namespace HoolaRiven
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
                             if (W.IsReady() && InWRange(sender)) W.Cast();
-                            else if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            else if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("TalonCutthroat"))
@@ -365,14 +365,14 @@ namespace HoolaRiven
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("GarenQAttack"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("XenZhaoThrust3"))
@@ -386,49 +386,49 @@ namespace HoolaRiven
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("RengarPassiveBuffDash"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("RengarPassiveBuffDashAADummy"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("TwitchEParticle"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("FizzPiercingStrike"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("HungeringStrike"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("YasuoDash"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("KatarinaRTrigger"))
@@ -436,14 +436,14 @@ namespace HoolaRiven
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
                             if (W.IsReady() && InWRange(sender)) W.Cast();
-                            else if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            else if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("YasuoDash"))
                     {
                         if (args.Target.NetworkId == Player.NetworkId)
                         {
-                            if (E.IsReady()) EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                            if (E.IsReady()) E.Cast(epos);
                         }
                     }
                     if (args.SData.Name.Contains("KatarinaE"))
@@ -503,7 +503,7 @@ namespace HoolaRiven
                 if (R.IsReady() && R.Name == IsFirstR && W.IsReady() && E.IsReady() &&
                     Player.Distance(target.Position) <= 250 + 70 + Player.AttackRange)
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                    E.Cast(target.Position);
                     CastYoumuu();
                     ForceR();
                     Core.DelayAction(ForceW, 100);
@@ -511,7 +511,7 @@ namespace HoolaRiven
                 else if (R.IsReady() && R.Name == IsFirstR && E.IsReady() && W.IsReady() && Q.IsReady() &&
                          Player.Distance(target.Position) <= 400 + 70 + Player.AttackRange)
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                    E.Cast(target.Position);
                     CastYoumuu();
                     ForceR();
                     Core.DelayAction(() => ForceCastQ(target), 150);
@@ -522,7 +522,7 @@ namespace HoolaRiven
                          (!HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") ||
                           (HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") && !HasItem())))
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                    E.Cast(target.Position);
                     CastYoumuu();
                     ForceR();
                     Core.DelayAction(FlashW, 180);
@@ -532,7 +532,7 @@ namespace HoolaRiven
                          (Player.Distance(target.Position) <= 800) &&
                          HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") && HasItem())
                 {
-                    EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                    E.Cast(target.Position);
                     ForceR();
                     Core.DelayAction(ForceItem, 100);
                     Core.DelayAction(FlashW, 210);
@@ -554,7 +554,7 @@ namespace HoolaRiven
                     if (target.IsValidTarget() && !target.IsZombie)
                     {
                         if (!Player.IsInAutoAttackRange(target) && !InWRange(target))
-                            EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                            E.Cast(target.Position);
                         Core.DelayAction(ForceItem, 10);
                         Core.DelayAction(() => ForceCastQ(target), 170);
                     }
@@ -578,7 +578,7 @@ namespace HoolaRiven
             {
                 var epos = Player.ServerPosition +
                            (Player.ServerPosition - target.ServerPosition).Normalized()*300;
-                EloBuddy.Player.CastSpell(SpellSlot.E, epos);
+                E.Cast(epos);
                 Core.DelayAction(() => EloBuddy.Player.CastSpell(SpellSlot.Q, epos), 190);
             }
         }
@@ -594,7 +594,7 @@ namespace HoolaRiven
             var x = Player.Position.Extend(Game.CursorPos, 300);
             if (W.IsReady() && enemy.Any()) foreach (var target in enemy) if (InWRange(target)) W.Cast();
             if (Q.IsReady() && !Player.IsDashing()) EloBuddy.Player.CastSpell(SpellSlot.Q, Game.CursorPos);
-            if (E.IsReady() && !Player.IsDashing()) EloBuddy.Player.CastSpell(SpellSlot.E, x);
+            if (E.IsReady() && !Player.IsDashing()) E.Cast(x);
             ;
         }
 
@@ -609,7 +609,7 @@ namespace HoolaRiven
 
             if (W.IsReady() && E.IsReady() && !Player.IsInAutoAttackRange(Mobs[0]))
             {
-                EloBuddy.Player.CastSpell(SpellSlot.E, Mobs[0].Position);
+                E.Cast(Mobs[0].Position);
                 Core.DelayAction(ForceItem, 1);
                 Core.DelayAction(ForceW, 200);
             }
@@ -718,7 +718,7 @@ namespace HoolaRiven
                         }
                         else if (E.IsReady())
                         {
-                            EloBuddy.Player.CastSpell(SpellSlot.E, Mobs[0].Position);
+                            E.Cast(Mobs[0].Position);
                         }
                     }
                 }
@@ -752,7 +752,7 @@ namespace HoolaRiven
                         Core.DelayAction(ForceW, 1);
                     }
                     else if (E.IsReady() && !Player.IsInAutoAttackRange(target))
-                        EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                        E.Cast(target.Position);
                 }
                 if (HoolaMenu.KeybindValue(HoolaMenu.ComboMenu, "FastHarass"))
                 {
@@ -774,7 +774,7 @@ namespace HoolaRiven
                     }
                     else if (E.IsReady() && !Player.IsInAutoAttackRange(target) && !InWRange(target))
                     {
-                        EloBuddy.Player.CastSpell(SpellSlot.E, target.Position);
+                        E.Cast(target.Position);
                     }
                 }
 
@@ -1001,8 +1001,7 @@ namespace HoolaRiven
             if (target.IsValidTarget() && !target.IsZombie)
             {
                 W.Cast();
-                Chat.Print("Zk");
-                Core.DelayAction(() => EloBuddy.Player.CastSpell(Flash.Slot, target.Position), 10);
+                Core.DelayAction(() => Flash.Cast(target.Position), 10);
             }
         }
 
