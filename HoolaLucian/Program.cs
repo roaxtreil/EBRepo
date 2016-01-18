@@ -291,7 +291,8 @@ namespace HoolaLucian
         }
         static void LaneClear()
         {
-            if (Q.IsReady() && Getcheckboxvalue(Laneclear, "LHQ") && Player.ManaPercent >= Getslidervalue(Laneclear, "LMinMana"))
+			 if (Player.ManaPercent < LMinMana) return;
+            if (Q.IsReady() && Player.ManaPercent >= Getslidervalue(Laneclear, "LMinMana"))
             {
                 var extarget = TargetSelector.GetTarget(Q1.Range, DamageType.Physical);
                 var Minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,

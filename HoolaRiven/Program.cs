@@ -50,12 +50,7 @@ namespace HoolaRiven
                     : Item.CanUseItem(3074) && Item.HasItem(3074) ? 3074 : 0;
             }
         }
-
-        public static bool FlashIsReady
-        {
-            get { return Flash != null && Flash.IsReady(); }
-        }
-
+       
         private static void Main()
         {
             Loading.OnLoadingComplete += OnGameLoad;
@@ -521,7 +516,7 @@ namespace HoolaRiven
                         Core.DelayAction(ForceW, 160);
                     }
                 }
-                else if (FlashIsReady
+                else if (Flash.IsReady()
                          && R.IsReady() && R.Name == IsFirstR && (Player.Distance(target.Position) <= 800) &&
                          (!HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") ||
                           (HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") && !HasItem())))
@@ -531,7 +526,7 @@ namespace HoolaRiven
                     ForceR();
                     Core.DelayAction(FlashW, 180);
                 }
-                else if (FlashIsReady
+                else if (Flash.IsReady()
                          && R.IsReady() && E.IsReady() && W.IsReady() && R.Name == IsFirstR &&
                          (Player.Distance(target.Position) <= 800) &&
                          HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") && HasItem())
