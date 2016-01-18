@@ -299,9 +299,11 @@ namespace HoolaLucian
                 var extarget = TargetSelector.GetTarget(Q1.Range, DamageType.Physical);
                 var Minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
                     Player.Position, Q.Range);
+                if(extarget != null && extarget.IsValidTarget())
                 foreach (var Minion in Minions)
                 {
                     var QHit = new Geometry.Polygon.Rectangle(Player.Position, Player.Position.Extend(Minion.Position, Q1.Range), Q1.Width);
+
                     var QPred = Q1.GetPrediction(extarget);
                     if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance == HitChance.High)
                     {
@@ -392,7 +394,7 @@ namespace HoolaLucian
                 foreach (
                     var enemy in
                         ObjectManager.Get<AIHeroClient>()
-                            .Where(ene => ene.IsValidTarget() && !ene.IsZombie))
+                            .Where(ene => ene.IsValidTarget() && !ene.IsZombie && ene.IsEnemy))
                 {
                     Indicator.unit = enemy;
                     Indicator.drawDmg(getComboDamage(enemy), new ColorBGRA(255, 204, 0, 160));
