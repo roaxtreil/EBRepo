@@ -14,7 +14,6 @@ namespace HoolaRiven
         private const string IsFirstR = "RivenFengShuiEngine";
         private const string IsSecondR = "rivenizunablade";
         private static readonly AIHeroClient Player = ObjectManager.Player;
-        public static Spell.Skillshot Flash;
         private static readonly Spell.Active Q = new Spell.Active(SpellSlot.Q);
         private static readonly Spell.Active W = new Spell.Active(SpellSlot.W);
         private static readonly Spell.Targeted E = new Spell.Targeted(SpellSlot.E, 300);
@@ -26,6 +25,7 @@ namespace HoolaRiven
         };
 
         private static readonly Spell.Active R2 = new Spell.Active(SpellSlot.R, 0);
+        public static Spell.Skillshot Flash;
         private static int QStack = 1;
         private static bool forceQ;
         private static bool forceW;
@@ -50,7 +50,11 @@ namespace HoolaRiven
                     : Item.CanUseItem(3074) && Item.HasItem(3074) ? 3074 : 0;
             }
         }
-   
+
+        public static bool FlashIsReady
+        {
+            get { return Flash != null && Flash.IsReady(); }
+        }
 
         private static void Main()
         {
@@ -59,12 +63,13 @@ namespace HoolaRiven
 
         private static void OnGameLoad(EventArgs args)
         {
-            SpellDataInst flash = Player.Spellbook.Spells.Any(s => s.Name.Contains("summonerflash"))
+            SpellDataInst flash = Player.Spellbook.Spells.Where(s => s.Name.Contains("summonerflash")).Any()
                 ? Player.Spellbook.Spells.First(spell => spell.Name.Contains("summonerflash")) : null;
-            if (flash != null)
+            if (flash.Slot != SpellSlot.Unknown)
             {
                 Flash = new Spell.Skillshot(flash.Slot, 425, SkillShotType.Linear);
             }
+
             HoolaMenu.InitializeMenu();
             Game.OnUpdate += OnTick;
             Obj_AI_Base.OnProcessSpellCast += OnCast;
@@ -502,8 +507,7 @@ namespace HoolaRiven
                     E.Cast(target.Position);
                     CastYoumuu();
                     ForceR();
-                    Core.DelayAction(ForceW, 100);
-                    
+                    Core.DelayAction(ForceW, 100);                
                 }
                 else if (R.IsReady() && R.Name == IsFirstR && E.IsReady() && W.IsReady() && Q.IsReady() &&
                          Player.Distance(target.Position) <= 400 + 70 + Player.AttackRange)
@@ -512,10 +516,12 @@ namespace HoolaRiven
                     CastYoumuu();
                     ForceR();
                     Core.DelayAction(() => ForceCastQ(target), 150);
-                    Core.DelayAction(ForceW, 160);
-                    
+                    if (InWRange(target))
+                    {
+                        Core.DelayAction(ForceW, 160);
+                    }
                 }
-                else if (Flash.IsReady()
+                else if (FlashIsReady
                          && R.IsReady() && R.Name == IsFirstR && (Player.Distance(target.Position) <= 800) &&
                          (!HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") ||
                           (HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") && !HasItem())))
@@ -525,7 +531,7 @@ namespace HoolaRiven
                     ForceR();
                     Core.DelayAction(FlashW, 180);
                 }
-                else if (Flash.IsReady()
+                else if (FlashIsReady
                          && R.IsReady() && E.IsReady() && W.IsReady() && R.Name == IsFirstR &&
                          (Player.Distance(target.Position) <= 800) &&
                          HoolaMenu.BoolValue(HoolaMenu.MiscMenu, "FirstHydra") && HasItem())
@@ -722,7 +728,7 @@ namespace HoolaRiven
                 }
             }
 
-            if (args.Target is Obj_AI_Turret)
+            if (args.Target is Obj_AnimatedBuilding)
                 if (args.Target.IsValid && args.Target != null && Q.IsReady() &&
                     HoolaMenu.BoolValue(HoolaMenu.LaneClear, "LaneQ") &&
                     Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
@@ -993,11 +999,12 @@ namespace HoolaRiven
         private static void FlashW()
         {
             var target = TargetSelector.SelectedTarget;
-                Orbwalker.ForcedTarget = target;
-                Orbwalker.OrbwalkTo(target.ServerPosition);
+            if (target == null || !target.IsValidTarget())
+            {
+                if (target == null || !target.IsValidTarget()) return;
                 W.Cast();
-             Core.DelayAction(() => Flash.Cast(target.ServerPosition), 10);               
-            
+                Core.DelayAction(() => Flash.Cast(target.ServerPosition), 10);
+            }
         }
 
         private static double Rdame(Obj_AI_Base target, double health)
