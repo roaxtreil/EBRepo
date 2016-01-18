@@ -1,0 +1,2 @@
+C:\Users\Welington\Documents\GitHub\EloBuddy\TD MissFortune\bin\Debug\MissFortune.exe.config
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDMissFortune\bin\Debug\MissFortune.exe.config

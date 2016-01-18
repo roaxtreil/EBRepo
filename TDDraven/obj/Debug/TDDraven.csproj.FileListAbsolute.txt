@@ -1,0 +1,11 @@
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\Sebby Draven.exe.config
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\Sebby Draven.exe
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\Sebby Draven.pdb
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\EloBuddy.dll
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\EloBuddy.SDK.dll
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\SharpDX.dll
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\SharpDX.Direct3D9.dll
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\obj\Debug\TDDraven.csprojResolveAssemblyReference.cache
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\obj\Debug\Sebby Draven.exe
+C:\Users\Welington\Documents\GitHub\EloBuddy\TDDraven\obj\Debug\Sebby Draven.pdb
