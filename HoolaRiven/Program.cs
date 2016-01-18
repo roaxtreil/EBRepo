@@ -85,8 +85,12 @@ namespace HoolaRiven
             UseRMaxDam();
             AutoUseW();
             Killsteal();
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)){
                 Combo();
+			} else
+            {
+                Orbwalker.ForcedTarget = null;
+            }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
                 Jungleclear();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
@@ -182,7 +186,8 @@ namespace HoolaRiven
         {
             var targetR = TargetSelector.GetTarget(250 + Player.AttackRange + 70, DamageType.Physical);
             if (!targetR.IsValidTarget() && targetR == null) return;
-
+                Orbwalker.ForcedTarget = targetR;
+                Orbwalker.OrbwalkTo(targetR.ServerPosition);
             if (R.IsReady() && R.Name == IsFirstR && Player.IsInAutoAttackRange(targetR) &&
                 HoolaMenu.KeybindValue(HoolaMenu.ComboMenu, "AlwaysR") && targetR != null) ForceR();
             if (R.IsReady() && R.Name == IsFirstR && W.IsReady() && InWRange(targetR) &&
