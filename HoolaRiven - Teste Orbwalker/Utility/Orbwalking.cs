@@ -740,11 +740,9 @@ namespace HoolaRiven
                 ConfigMenu.Add("Orbwalk", new KeyBind("Combo", false, KeyBind.BindTypes.HoldActive, 32));
                 ConfigMenu.Add("Burst", new KeyBind("Burst", false, KeyBind.BindTypes.HoldActive, "T".ToCharArray()[0]));
                 ConfigMenu.Add("FastHarass",
-                    new KeyBind("Fast Harass", false, KeyBind.BindTypes.HoldActive, "Y".ToCharArray()[0]));
-               
+                    new KeyBind("Fast Harass", false, KeyBind.BindTypes.HoldActive, "Y".ToCharArray()[0]));           
 
                 MiscMenu = ConfigMenu.AddSubMenu("Misc");
-                MiscMenu.Add("HoldPosRadius", new Slider("Hold Position Radius", 0, 0, 250));
                 MiscMenu.Add("PriorizeFarm", new EloBuddy.SDK.Menu.Values.CheckBox("Priorize farm over harass"));
                 MiscMenu.Add("AttackWards", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack wards", false));
                 MiscMenu.Add("AttackPetsnTraps", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack pets & traps"));
@@ -778,6 +776,14 @@ namespace HoolaRiven
                 return Orbwalking.InAutoAttackRange(target);
             }
 
+            /// <summary>
+            /// Gets the farm delay.
+            /// </summary>
+            /// <value>The farm delay.</value>
+            private int FarmDelay
+            {
+                get { return ConfigMenu["FarmDelay"].Cast<Slider>().CurrentValue; }
+            }
 
             /// <summary>
             /// Gets a value indicating whether the orbwalker is orbwalking by checking the missiles.
@@ -876,7 +882,18 @@ namespace HoolaRiven
             /// Determines if the orbwalker should wait before attacking a minion.
             /// </summary>
             /// <returns><c>true</c> if the orbwalker should wait before attacking a minion, <c>false</c> otherwise.</returns>
-           
+            private bool ShouldWait()
+            {
+                return
+                    ObjectManager.Get<Obj_AI_Minion>()
+                        .Any(
+                            minion =>
+                                minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
+                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false) &&
+                                HealthPrediction.LaneClearHealthPrediction(
+                                    minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay) <=
+                                Player.GetAutoAttackDamage(minion));
+            }
 
             /// <summary>
             /// Gets the target.
@@ -885,48 +902,13 @@ namespace HoolaRiven
             public virtual AttackableUnit GetTarget()
             {
                 AttackableUnit result = null;
-                if ((ActiveMode == OrbwalkingMode.Mixed || ActiveMode == OrbwalkingMode.LaneClear) &&
-                    !MiscMenu["PriorizeFarm"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue)
-                {
-                    var target = TargetSelector.GetTarget(1000, DamageType.Physical);
-                    if (target != null && InAutoAttackRange(target))
-                    {
-                        return target;
-                    }
-                }
-              
-
+               
                 //Forced target
                 if (_forcedTarget.IsValidTarget() && InAutoAttackRange(_forcedTarget))
                 {
                     return _forcedTarget;
                 }
-
-                /* turrets / inhibitors / nexus */
-                if (ActiveMode == OrbwalkingMode.LaneClear && (!MiscMenu["FocusMinionsOverTurrets"].Cast<KeyBind>().CurrentValue || !MinionManager.GetMinions(ObjectManager.Player.Position, GetRealAutoAttackRange(ObjectManager.Player)).Any()))
-                {
-                    /* turrets */
-                    foreach (var turret in
-                        ObjectManager.Get<Obj_AI_Turret>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
-                    {
-                        return turret;
-                    }
-
-                    /* inhibitor */
-                    foreach (var turret in
-                        ObjectManager.Get<Obj_BarracksDampener>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
-                    {
-                        return turret;
-                    }
-
-                    /* nexus */
-                    foreach (var nexus in
-                        ObjectManager.Get<Obj_HQ>().Where(t => t.IsValidTarget() && InAutoAttackRange(t)))
-                    {
-                        return nexus;
-                    }
-                }
-
+                
                 /*Champions*/
                 if (ActiveMode != OrbwalkingMode.LastHit && ActiveMode != OrbwalkingMode.Flee)
                 {
@@ -936,28 +918,7 @@ namespace HoolaRiven
                         return target;
                     }
                 }
-
-                /*Jungle minions*/
-                if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed)
-                {
-                    var jminions =
-                        ObjectManager.Get<Obj_AI_Minion>()
-                            .Where(
-                                mob =>
-                                mob.IsValidTarget() && mob.Team == GameObjectTeam.Neutral && this.InAutoAttackRange(mob)
-                                && mob.CharData.BaseSkinName != "gangplankbarrel");
-
-                    result = ConfigMenu["Smallminionsprio"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue
-                                 ? jminions.MinOrDefault(mob => mob.MaxHealth)
-                                 : jminions.MaxOrDefault(mob => mob.MaxHealth);
-
-                    if (result != null)
-                    {
-                        return result;
-                    }
-                }
                 
-
                 return result;
             }
 
@@ -987,7 +948,7 @@ namespace HoolaRiven
                     Orbwalk(
                         target, (_orbwalkingPoint.To2D().IsValid()) ? _orbwalkingPoint : Game.CursorPos,
                         ConfigMenu["ExtraWindup"].Cast<Slider>().CurrentValue,
-                        Math.Max(MiscMenu["HoldPosRadius"].Cast<Slider>().CurrentValue, 30));
+                        Math.Max(0, 30));
                 }
                 catch (Exception e)
                 {
