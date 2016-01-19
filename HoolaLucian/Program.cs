@@ -228,7 +228,8 @@ namespace HoolaLucian
         private static void OnDoCastDelayed(GameObjectProcessSpellCastEventArgs args)
         {
             AAPassive = false;
-            if (args.Target is AIHeroClient)
+            var @base = args.Target as AIHeroClient;
+            if (@base != null)
             {
                 var target = (Obj_AI_Base)args.Target;
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && target.IsValid)
@@ -277,11 +278,12 @@ namespace HoolaLucian
                 var target = TargetSelector.GetTarget(Q1.Range, DamageType.Physical);
                 var Minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
                     Player.Position, Q.Range);
+                if(target == null || !target.IsValidTarget(Q1.Range) || Minions == null)
                 foreach (var Minion in Minions)
                 {
                     var QHit = new Geometry.Polygon.Rectangle(Player.Position, Player.Position.Extend(Minion.Position, Q1.Range),Q1.Width);
                     var QPred = Q1.GetPrediction(target);
-                    if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance == HitChance.High)
+                    if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance == HitChance.AveragePoint)
                     {
                         Q.Cast(Minion);
                         break;
@@ -303,7 +305,7 @@ namespace HoolaLucian
                     var QHit = new Geometry.Polygon.Rectangle(Player.Position, Player.Position.Extend(Minion.Position, Q1.Range), Q1.Width);
 
                     var QPred = Q1.GetPrediction(extarget);
-                    if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance == HitChance.High)
+                    if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance >= HitChance.AveragePoint)
                     {
                         Q.Cast(Minion);
                         break;
@@ -323,7 +325,7 @@ namespace HoolaLucian
                 {
                     var QHit = new Geometry.Polygon.Rectangle(Player.Position, Player.Position.Extend(Minion.Position, Q1.Range), Q1.Width);
                     var QPred = Q1.GetPrediction(extarget);
-                    if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance == HitChance.High)
+                    if (!QHit.IsOutside(QPred.UnitPosition.To2D()) && QPred.HitChance >= HitChance.AveragePoint)
                     {
                         Q.Cast(Minion);
                         break;
