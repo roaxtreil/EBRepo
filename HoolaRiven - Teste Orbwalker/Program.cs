@@ -677,9 +677,9 @@ namespace HoolaRiven
                         Core.DelayAction(Reset, (SliderValue(MiscMenu, "QLD")*10) + 3);
                     break;
                 case "Spell3":
-                    if ((KeybindValue(ComboMenu, "Burst") ||
+                    if ((Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst ||
                          Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo ||
-                         KeybindValue(ComboMenu, "FastHarass") ||
+                         Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass ||
                          Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee) &&
                         BoolValue(MiscMenu, "youmuu"))
                         CastYoumuu();
@@ -779,7 +779,7 @@ namespace HoolaRiven
                     else if (E.IsReady() && !Player.IsInAutoAttackRange(target))
                         E.Cast(target.Position);
                 }
-                if (KeybindValue(ComboMenu, "FastHarass"))
+                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass)
                 {
                     if (HasTitan())
                     {
@@ -817,7 +817,7 @@ namespace HoolaRiven
                     }
                 }
 
-                if (KeybindValue(ComboMenu, "Burst"))
+                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst)
                 {
                     if (HasTitan())
                     {
