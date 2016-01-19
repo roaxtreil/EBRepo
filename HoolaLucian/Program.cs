@@ -337,7 +337,7 @@ namespace HoolaLucian
         static void UseRTarget()
         {
             var target = TargetSelector.GetTarget(R.Range, DamageType.Physical);
-            if (Getkeybindvalue(Combo, "ForceR") && R.IsReady() && target.IsValid && !Player.HasBuff("LucianR")) R.Cast(target.Position);
+            if (target != null && Getkeybindvalue(Combo, "ForceR") && R.IsReady() && target.IsValid && !Player.HasBuff("LucianR")) R.Cast(target.Position);
         }
         static void Game_OnUpdate(EventArgs args)
         {
