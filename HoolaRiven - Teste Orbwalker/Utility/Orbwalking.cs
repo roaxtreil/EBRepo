@@ -944,7 +944,7 @@ namespace HoolaRiven
                 if ((ActiveMode == OrbwalkingMode.Mixed || ActiveMode == OrbwalkingMode.LaneClear) &&
                     !MiscMenu["PriorizeFarm"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue)
                 {
-                    var target = TargetSelector.GetTarget(null, DamageType.Physical);
+                    var target = TargetSelector.GetTarget(Player.AttackRange, DamageType.Physical);
                     if (target != null && InAutoAttackRange(target))
                     {
                         return target;
@@ -1030,7 +1030,7 @@ namespace HoolaRiven
                 /*Champions*/
                 if (ActiveMode != OrbwalkingMode.LastHit && ActiveMode != OrbwalkingMode.Flee)
                 {
-                    var target = TargetSelector.GetTarget(null, DamageType.Physical);
+                    var target = TargetSelector.GetTarget(Player.AttackRange, DamageType.Physical);
                     if (target.IsValidTarget() && InAutoAttackRange(target))
                     {
                         return target;
