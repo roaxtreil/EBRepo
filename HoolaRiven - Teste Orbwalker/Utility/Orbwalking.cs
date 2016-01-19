@@ -886,7 +886,7 @@ namespace HoolaRiven
                 /*Champions*/
                 if (ActiveMode != OrbwalkingMode.LastHit && ActiveMode != OrbwalkingMode.Flee)
                 {
-                    var target = TargetSelector.GetTarget(1000, DamageType.Physical);
+                    var target = TargetSelector.GetTarget(Player.BoundingRadius, DamageType.Physical);
                     if (target.IsValidTarget() && InAutoAttackRange(target))
                     {
                         return target;
