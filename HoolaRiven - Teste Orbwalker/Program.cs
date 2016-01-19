@@ -127,19 +127,37 @@ namespace HoolaRiven
             Obj_AI_Base.OnProcessSpellCast += OnCasting;
             Interrupter.OnInterruptableSpell += Interrupt;
         }
+        public static void DisableOrbwalker()
+        {
+            EloBuddy.SDK.Orbwalker.DisableAttacking = true;
+            EloBuddy.SDK.Orbwalker.DisableMovement = true;
+        }
 
+        public static void EnableOrbwalker()
+        {
+            EloBuddy.SDK.Orbwalker.DisableAttacking = false;
+            EloBuddy.SDK.Orbwalker.DisableMovement = false;
+        }
         private static void OnTick(EventArgs args)
         {
+            if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.Combo))
+            {
+                DisableOrbwalker();
+            }
+            else
+            {
+                EnableOrbwalker();
+            }
             ForceSkill();
             UseRMaxDam();
             AutoUseW();
             Killsteal();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo) Combo();
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) Jungleclear();
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed) Harass();
+            if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LaneClear)) Jungleclear();
+            if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.Harass)) Harass();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass) FastHarass();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst) Burst();
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee) Flee();
+            if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.Flee)) Flee();
 
             if (Utils.GameTimeTickCount - LastQ >= 3650 && QStack != 1 && !Player.IsRecalling() &&
                 BoolValue(MiscMenu, "KeepQ") && Q.IsReady())
@@ -292,7 +310,7 @@ namespace HoolaRiven
             QTarget = (Obj_AI_Base) args.Target;
             if (args.Target is Obj_AI_Minion)
             {
-                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LaneClear))
                 {
                     var Minions =
                         EntityManager.MinionsAndMonsters.Get(EntityManager.MinionsAndMonsters.EntityType.Both,
@@ -649,38 +667,38 @@ namespace HoolaRiven
                 case "Spell1a":
                     LastQ = Utils.GameTimeTickCount;
                     if (BoolValue(MiscMenu, "Qstrange") &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None) Chat.Say("/d");
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None)) Chat.Say("/d");
                     QStack = 2;
-                    if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
+                    if (!EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None) &&
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LastHit) &&
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None))
                         Core.DelayAction(Reset, (SliderValue(MiscMenu, "QD")*10) + 1);
                     break;
                 case "Spell1b":
                     LastQ = Utils.GameTimeTickCount;
                     if (BoolValue(MiscMenu, "Qstrange") &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None) Chat.Say("/d");
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None)) Chat.Say("/d");
                     QStack = 3;
-                    if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
+                    if (!EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None) &&
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LastHit) &&
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None))
                         Core.DelayAction(Reset, (SliderValue(MiscMenu, "QD")*10) + 1);
                     break;
                 case "Spell1c":
                     LastQ = Utils.GameTimeTickCount;
                     if (BoolValue(MiscMenu, "Qstrange") &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None) Chat.Say("/d");
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None)) Chat.Say("/d");
                     QStack = 1;
-                    if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.LastHit &&
-                        Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.None)
+                    if (!EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None) &&
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LastHit) &&
+                        !EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.None))
                         Core.DelayAction(Reset, (SliderValue(MiscMenu, "QLD")*10) + 3);
                     break;
                 case "Spell3":
                     if ((Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Burst ||
                          Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo ||
                          Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.FastHarass ||
-                         Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee) &&
+                         EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.Flee)) &&
                         BoolValue(MiscMenu, "youmuu"))
                         CastYoumuu();
                     break;
@@ -720,7 +738,7 @@ namespace HoolaRiven
 
             if (args.Target is Obj_AI_Minion)
             {
-                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LaneClear))
                 {
                     var Mobs = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
                         Player.Position, 120 + 70 + Player.BoundingRadius).OrderByDescending(i => i.MaxHealth).ToArray();
@@ -752,7 +770,7 @@ namespace HoolaRiven
             if (args.Target is Obj_AnimatedBuilding)
                 if (args.Target.IsValid && args.Target != null && Q.IsReady() &&
                     BoolValue(LaneClear, "LaneQ") &&
-                    Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                    EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LaneClear))
                     ForceCastQ((Obj_AI_Base) args.Target);
             if (args.Target is AIHeroClient)
             {
@@ -803,7 +821,7 @@ namespace HoolaRiven
                     }
                 }
 
-                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+                if (EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.Harass))
                 {
                     if (HasTitan())
                     {

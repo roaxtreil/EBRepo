@@ -767,18 +767,12 @@ namespace HoolaRiven
                 ConfigMenu.Add("FarmDelay", new Slider("Farm delay", 0));
                 ConfigMenu.Add("StillCombo", new KeyBind("Combo without moving", false, KeyBind.BindTypes.HoldActive, "N".ToCharArray()[0]));
 
-                DisableOrbwalker();
+               
                 Player = ObjectManager.Player;
                 Game.OnUpdate += GameOnOnGameUpdate;
                 Instances.Add(this);
             }
-       
-
-        private static void DisableOrbwalker()
-            {
-                EloBuddy.SDK.Orbwalker.DisableAttacking = true;
-                EloBuddy.SDK.Orbwalker.DisableMovement = true;
-            }
+      
 
             /// <summary>
             /// Determines if a target is in auto attack range.
