@@ -741,16 +741,7 @@ namespace HoolaRiven
                 ConfigMenu.Add("Burst", new KeyBind("Burst", false, KeyBind.BindTypes.HoldActive, "T".ToCharArray()[0]));
                 ConfigMenu.Add("FastHarass",
                     new KeyBind("Fast Harass", false, KeyBind.BindTypes.HoldActive, "Y".ToCharArray()[0]));           
-
-                MiscMenu = ConfigMenu.AddSubMenu("Misc");
-                MiscMenu.Add("PriorizeFarm", new EloBuddy.SDK.Menu.Values.CheckBox("Priorize farm over harass"));
-                MiscMenu.Add("AttackWards", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack wards", false));
-                MiscMenu.Add("AttackPetsnTraps", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack pets & traps"));
-                MiscMenu.Add("AttackBarrel", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack gangplank barrel"));
-                MiscMenu.Add("Smallminionsprio", new EloBuddy.SDK.Menu.Values.CheckBox("Jungle clear small first", false));
-                MiscMenu.Add("FocusMinionsOverTurrets", new KeyBind("Focus minions over objectives", false, KeyBind.BindTypes.PressToggle, "M".ToCharArray()[0]));
                 
-
                 /* Missile check */
                 ConfigMenu.Add("MissileCheck", new EloBuddy.SDK.Menu.Values.CheckBox("Use Missile Check"));
 
@@ -877,23 +868,7 @@ namespace HoolaRiven
             {
                 _orbwalkingPoint = point;
             }
-
-            /// <summary>
-            /// Determines if the orbwalker should wait before attacking a minion.
-            /// </summary>
-            /// <returns><c>true</c> if the orbwalker should wait before attacking a minion, <c>false</c> otherwise.</returns>
-            private bool ShouldWait()
-            {
-                return
-                    ObjectManager.Get<Obj_AI_Minion>()
-                        .Any(
-                            minion =>
-                                minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
-                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false) &&
-                                HealthPrediction.LaneClearHealthPrediction(
-                                    minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay) <=
-                                Player.GetAutoAttackDamage(minion));
-            }
+            
 
             /// <summary>
             /// Gets the target.
