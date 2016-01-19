@@ -18,7 +18,7 @@ namespace HoolaRiven
         public static Orbwalking.Orbwalker Orbwalker;
         private static readonly AIHeroClient Player = ObjectManager.Player;
         private static readonly Spell.Active Q = new Spell.Active(SpellSlot.Q);
-        private static readonly Spell.Active W = new Spell.Active(SpellSlot.W);
+        public static readonly Spell.Active W = new Spell.Active(SpellSlot.W);
         private static readonly Spell.Targeted E = new Spell.Targeted(SpellSlot.E, 300);
         private static readonly Spell.Skillshot R = new Spell.Skillshot(SpellSlot.R, 900, SkillShotType.Cone, 250, 1600,
             45)
