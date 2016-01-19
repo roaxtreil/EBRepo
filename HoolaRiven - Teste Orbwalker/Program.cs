@@ -767,11 +767,7 @@ namespace HoolaRiven
                 }
             }
 
-            if (args.Target is Obj_AnimatedBuilding)
-                if (args.Target.IsValid && args.Target != null && Q.IsReady() &&
-                    BoolValue(LaneClear, "LaneQ") &&
-                    EloBuddy.SDK.Orbwalker.ActiveModesFlags.HasFlag(EloBuddy.SDK.Orbwalker.ActiveModes.LaneClear))
-                    ForceCastQ((Obj_AI_Base) args.Target);
+            if (args.Target is Obj_AI_Turret || args.Target is Obj_Barracks || args.Target is Obj_BarracksDampener || args.Target is Obj_Building) if (args.Target.IsValid && args.Target != null && Q.IsReady() && BoolValue(LaneClear, "LaneQ") && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear) ForceCastQ((Obj_AI_Base)args.Target);
             if (args.Target is AIHeroClient)
             {
                 var target = (AIHeroClient) args.Target;

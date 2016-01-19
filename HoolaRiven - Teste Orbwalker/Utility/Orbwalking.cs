@@ -747,8 +747,7 @@ namespace HoolaRiven
 
                 /* Delay sliders */
                 ConfigMenu.Add("ExtraWindup", new Slider("Extra windup time", 35));
-                ConfigMenu.Add("FarmDelay", new Slider("Farm delay", 0));
-                ConfigMenu.Add("StillCombo", new KeyBind("Combo without moving", false, KeyBind.BindTypes.HoldActive, "N".ToCharArray()[0]));
+                ConfigMenu.Add("FarmDelay", new Slider("Farm delay", 0));           
 
                
                 Player = ObjectManager.Player;
@@ -911,7 +910,7 @@ namespace HoolaRiven
                     }
 
                     //Block movement if StillCombo is used
-                    Move = !ConfigMenu["StillCombo"].Cast<KeyBind>().CurrentValue;
+                    Move = true;
 
                     //Prevent canceling important spells
                     if (Player.IsCastingInterruptableSpell(true))
