@@ -278,7 +278,7 @@ namespace HoolaLucian
                 var target = TargetSelector.GetTarget(Q1.Range, DamageType.Physical);
                 var Minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy,
                     Player.Position, Q.Range);
-                if(target == null || !target.IsValidTarget(Q1.Range) || Minions == null)
+                if (target == null || !target.IsValidTarget(Q1.Range) || Minions == null) return;
                 foreach (var Minion in Minions)
                 {
                     var QHit = new Geometry.Polygon.Rectangle(Player.Position, Player.Position.Extend(Minion.Position, Q1.Range),Q1.Width);
