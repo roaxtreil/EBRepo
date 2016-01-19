@@ -778,14 +778,6 @@ namespace HoolaRiven
                 return Orbwalking.InAutoAttackRange(target);
             }
 
-            /// <summary>
-            /// Gets the farm delay.
-            /// </summary>
-            /// <value>The farm delay.</value>
-            private int FarmDelay
-            {
-                get { return ConfigMenu["FarmDelay"].Cast<Slider>().CurrentValue; }
-            }
 
             /// <summary>
             /// Gets a value indicating whether the orbwalker is orbwalking by checking the missiles.
@@ -884,18 +876,7 @@ namespace HoolaRiven
             /// Determines if the orbwalker should wait before attacking a minion.
             /// </summary>
             /// <returns><c>true</c> if the orbwalker should wait before attacking a minion, <c>false</c> otherwise.</returns>
-            private bool ShouldWait()
-            {
-                return
-                    ObjectManager.Get<Obj_AI_Minion>()
-                        .Any(
-                            minion =>
-                                minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
-                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false) &&
-                                HealthPrediction.LaneClearHealthPrediction(
-                                    minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay) <=
-                                Player.GetAutoAttackDamage(minion));
-            }
+           
 
             /// <summary>
             /// Gets the target.
@@ -913,51 +894,7 @@ namespace HoolaRiven
                         return target;
                     }
                 }
-
-                /*Killable Minion*/
-                if (ActiveMode == OrbwalkingMode.LaneClear || (ActiveMode == OrbwalkingMode.Mixed && ConfigMenu["LWH"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue) ||
-                    ActiveMode == OrbwalkingMode.LastHit)
-                {
-                    var MinionList =
-                        ObjectManager.Get<Obj_AI_Minion>()
-                            .Where(
-                                minion =>
-                                    minion.IsValidTarget() && InAutoAttackRange(minion))
-                                    .OrderByDescending(minion => minion.CharData.BaseSkinName.Contains("Siege"))
-                                    .ThenBy(minion => minion.CharData.BaseSkinName.Contains("Super"))
-                                    .ThenBy(minion => minion.Health)
-                                    .ThenByDescending(minion => minion.MaxHealth);
-
-                    foreach (var minion in MinionList)
-                    {
-                        var t = (int)(Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
-                                1000 * (int)Math.Max(0, Player.Distance(minion) - Player.BoundingRadius) / int.MaxValue;
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
-
-                        if (minion.Team != GameObjectTeam.Neutral && (MiscMenu["AttackPetsnTraps"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue &&
-                            minion.CharData.BaseSkinName != "jarvanivstandard" || MinionManager.IsMinion(minion, MiscMenu["AttackWards"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue)))
-                        {
-                            if (predHealth <= 0)
-                            {
-                                FireOnNonKillableMinion(minion);
-                            }
-
-                            if (predHealth > 0 && predHealth <= Player.GetAutoAttackDamage(minion, true))
-                            {
-                                return minion;
-                            }
-                        }
-
-                        if (minion.Team == GameObjectTeam.Neutral && (MiscMenu["AttackBarrel"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue &&
-                            minion.CharData.BaseSkinName == "gangplankbarrel" && minion.IsHPBarRendered))
-                        {
-                            if (minion.Health < 2)
-                            {
-                                return minion;
-                            }
-                        }
-                    }
-                }
+              
 
                 //Forced target
                 if (_forcedTarget.IsValidTarget() && InAutoAttackRange(_forcedTarget))
@@ -1019,43 +956,7 @@ namespace HoolaRiven
                         return result;
                     }
                 }
-
-                /*Lane Clear minions*/
-                if (ActiveMode == OrbwalkingMode.LaneClear)
-                {
-                    if (!ShouldWait())
-                    {
-                        if (_prevMinion.IsValidTarget() && InAutoAttackRange(_prevMinion))
-                        {
-                            var predHealth = HealthPrediction.LaneClearHealthPrediction(
-                                _prevMinion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay);
-                            if (predHealth >= 2 * Player.GetAutoAttackDamage(_prevMinion) ||
-                                Math.Abs(predHealth - _prevMinion.Health) < float.Epsilon)
-                            {
-                                return _prevMinion;
-                            }
-                        }
-
-                        result = (from minion in
-                                      ObjectManager.Get<Obj_AI_Minion>()
-                                          .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion) &&
-                                          (MiscMenu["AttackWards"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue || !MinionManager.IsWard(minion)) &&
-                                          (MiscMenu["AttackPetsnTraps"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue && minion.CharData.BaseSkinName != "jarvanivstandard" || MinionManager.IsMinion(minion, MiscMenu["AttackWards"].Cast<EloBuddy.SDK.Menu.Values.CheckBox>().CurrentValue)) &&
-                                          minion.CharData.BaseSkinName != "gangplankbarrel")
-                                  let predHealth =
-                                      HealthPrediction.LaneClearHealthPrediction(
-                                          minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay)
-                                  where
-                                      predHealth >= 2 * Player.GetAutoAttackDamage(minion) ||
-                                      Math.Abs(predHealth - minion.Health) < float.Epsilon
-                                  select minion).MaxOrDefault(m => !MinionManager.IsMinion(m, true) ? float.MaxValue : m.Health);
-
-                        if (result != null)
-                        {
-                            _prevMinion = (Obj_AI_Minion)result;
-                        }
-                    }
-                }
+                
 
                 return result;
             }
