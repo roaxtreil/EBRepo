@@ -918,7 +918,7 @@ namespace HoolaRiven
                         return;
                     }
 
-                    var target = GetTarget();
+					var target = EloBuddy.SDK.Orbwalker.GetTarget();
                     Orbwalk(
                         target, (_orbwalkingPoint.To2D().IsValid()) ? _orbwalkingPoint : Game.CursorPos,
                         ConfigMenu["ExtraWindup"].Cast<Slider>().CurrentValue,
