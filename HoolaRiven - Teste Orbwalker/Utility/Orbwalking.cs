@@ -740,7 +740,27 @@ namespace HoolaRiven
                 ConfigMenu.Add("Orbwalk", new KeyBind("Combo", false, KeyBind.BindTypes.HoldActive, 32));
                 ConfigMenu.Add("Burst", new KeyBind("Burst", false, KeyBind.BindTypes.HoldActive, "T".ToCharArray()[0]));
                 ConfigMenu.Add("FastHarass",
+<<<<<<< HEAD
                     new KeyBind("Fast Harass", false, KeyBind.BindTypes.HoldActive, "Y".ToCharArray()[0]));           
+=======
+                    new KeyBind("Fast Harass", false, KeyBind.BindTypes.HoldActive, "Y".ToCharArray()[0]));
+                ConfigMenu.Add("LaneClear",
+                    new KeyBind("Lane clear", false, KeyBind.BindTypes.HoldActive, "V".ToCharArray()[0]));
+                ConfigMenu.Add("LWH", new EloBuddy.SDK.Menu.Values.CheckBox("Lasthit while harass"));
+                ConfigMenu.Add("Farm", new KeyBind("Harass", false, KeyBind.BindTypes.HoldActive, "C".ToCharArray()[0]));
+                ConfigMenu.Add("LastHit",
+                    new KeyBind("Last Hit", false, KeyBind.BindTypes.HoldActive, "X".ToCharArray()[0]));
+                ConfigMenu.Add("Flee", new KeyBind("Flee", false, KeyBind.BindTypes.HoldActive, "G".ToCharArray()[0]));
+
+                MiscMenu = ConfigMenu.AddSubMenu("Misc");
+                MiscMenu.Add("HoldPosRadius", new Slider("Hold Position Radius", 0, 0, 250));
+                MiscMenu.Add("PriorizeFarm", new EloBuddy.SDK.Menu.Values.CheckBox("Priorize farm over harass"));
+                MiscMenu.Add("AttackWards", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack wards", false));
+                MiscMenu.Add("AttackPetsnTraps", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack pets & traps"));
+                MiscMenu.Add("AttackBarrel", new EloBuddy.SDK.Menu.Values.CheckBox("Auto attack gangplank barrel"));
+                MiscMenu.Add("Smallminionsprio", new EloBuddy.SDK.Menu.Values.CheckBox("Jungle clear small first", false));
+                MiscMenu.Add("FocusMinionsOverTurrets", new KeyBind("Focus minions over objectives", false, KeyBind.BindTypes.PressToggle, "M".ToCharArray()[0]));
+>>>>>>> parent of 6ced2c8... .
                 
                 /* Missile check */
                 ConfigMenu.Add("MissileCheck", new EloBuddy.SDK.Menu.Values.CheckBox("Use Missile Check"));
@@ -816,7 +836,32 @@ namespace HoolaRiven
                     {
                         return OrbwalkingMode.Combo;
                     }
-                    
+
+                    if (ConfigMenu["StillCombo"].Cast<KeyBind>().CurrentValue)
+                    {
+                        return OrbwalkingMode.Combo;
+                    }
+
+                    if (ConfigMenu["LaneClear"].Cast<KeyBind>().CurrentValue)
+                    {
+                        return OrbwalkingMode.LaneClear;
+                    }
+
+                    if (ConfigMenu["Farm"].Cast<KeyBind>().CurrentValue)
+                    {
+                        return OrbwalkingMode.Mixed;
+                    }
+
+                    if (ConfigMenu["LastHit"].Cast<KeyBind>().CurrentValue)
+                    {
+                        return OrbwalkingMode.LastHit;
+                    }
+
+                    if (ConfigMenu["Flee"].Cast<KeyBind>().CurrentValue)
+                    {
+                        return OrbwalkingMode.Flee;
+                    }
+
                     if (ConfigMenu["FastHarass"].Cast<KeyBind>().CurrentValue)
                     {
                         return OrbwalkingMode.FastHarass;
