@@ -255,6 +255,7 @@ namespace MoonDraven
                             }
 							else
 							{
+                                 if(!Player.Spellbook.IsAutoAttacking)
                                     Orbwalker.DisableMovement = true;
                                 Orbwalker.OrbwalkTo(bestReticle.Position);
                             }
@@ -263,11 +264,13 @@ namespace MoonDraven
 						{
 							if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.None))
 							{
+                                if (!Player.Spellbook.IsAutoAttacking)
                                     Orbwalker.DisableMovement = true;
                                 EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, bestReticle.Position);
                             }
 							else
 							{
+                                if (!Player.Spellbook.IsAutoAttacking)
                                     Orbwalker.DisableMovement = true;
                                 Orbwalker.OrbwalkTo(bestReticle.Position);
 							}
@@ -277,12 +280,14 @@ namespace MoonDraven
 					{
 						if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.None))
 						{
-							EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, bestReticle.Position);
-                            Orbwalker.DisableMovement = true;
+                            if (!Player.Spellbook.IsAutoAttacking)
+                                Orbwalker.DisableMovement = true;
+                            EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, bestReticle.Position);                         
                         }
 						else
 						{
-                            Orbwalker.DisableMovement = true;
+                            if (!Player.Spellbook.IsAutoAttacking)
+                                Orbwalker.DisableMovement = true;
                             Orbwalker.OrbwalkTo(bestReticle.Position);
 						}
 					}
