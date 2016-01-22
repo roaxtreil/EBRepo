@@ -3,16 +3,16 @@
 //   Copyright (C) 2015 ChewyMoon
 //   
 //   This program is free software: you can redistribute it and/or modify
-//   it under the terms of the GNU General Public License as published by
+//   it under the terms of the GNU General public static License as published by
 //   the Free Software Foundation, either version 3 of the License, or
 //   (at your option) any later version.
 //   
 //   This program is distributed in the hope that it will be useful,
 //   but WITHOUT ANY WARRANTY; without even the implied warranty of
 //   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//   GNU General Public License for more details.
+//   GNU General public static License for more details.
 //   
-//   You should have received a copy of the GNU General Public License
+//   You should have received a copy of the GNU General public static License
 //   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // </copyright>
 // <summary>
@@ -47,7 +47,7 @@ namespace MoonDraven
 		Justification = "Reviewed. Suppression is OK here.")]
 	internal class MoonDraven
 	{
-		#region Public Properties
+		#region public static Properties
 
 		/// <summary>
 		///     Gets or sets the e.
@@ -55,7 +55,7 @@ namespace MoonDraven
 		/// <value>
 		///     The e.
 		/// </value>
-		public Spell.Skillshot E { get; set; }
+		public static Spell.Skillshot E { get; set; }
 
 		/// <summary>
 		///     Gets the mana percent.
@@ -63,11 +63,11 @@ namespace MoonDraven
 		/// <value>
 		///     The mana percent.
 		/// </value>
-		public float ManaPercent
+		public static float ManaPercent
 		{
 			get
 			{
-				return this.Player.Mana / this.Player.MaxMana * 100;
+				return Player.Mana / Player.MaxMana * 100;
 			}
 		}
 
@@ -77,7 +77,7 @@ namespace MoonDraven
 		/// <value>
 		///     The menu.
 		/// </value>
-		public Menu Menu { get; set; }
+		public static Menu Menu { get; set; }
 
 	
 		/// <summary>
@@ -86,7 +86,7 @@ namespace MoonDraven
 		/// <value>
 		///     The player.
 		/// </value>
-		public AIHeroClient Player
+		public static AIHeroClient Player
 		{
 			get
 			{
@@ -100,7 +100,7 @@ namespace MoonDraven
 		/// <value>
 		///     The q.
 		/// </value>
-		public Spell.Active Q { get; set; }
+		public static Spell.Active Q { get; set; }
 
 		/// <summary>
 		///     Gets the q count.
@@ -108,12 +108,12 @@ namespace MoonDraven
 		/// <value>
 		///     The q count.
 		/// </value>
-		public int QCount
+		public static int QCount
 		{
 			get
 			{
-				return (this.Player.HasBuff("dravenspinning") ? 1 : 0)
-					+ (this.Player.HasBuff("dravenspinningleft") ? 1 : 0) + this.QReticles.Count;
+				return (Player.HasBuff("dravenspinning") ? 1 : 0)
+					+ (Player.HasBuff("dravenspinningleft") ? 1 : 0) + QReticles.Count;
 			}
 		}
 
@@ -123,7 +123,7 @@ namespace MoonDraven
 		/// <value>
 		///     The q reticles.
 		/// </value>
-		public List<QRecticle> QReticles { get; set; }
+		public static List<QRecticle> QReticles { get; set; }
 
 		/// <summary>
 		///     Gets or sets the r.
@@ -131,7 +131,7 @@ namespace MoonDraven
 		/// <value>
 		///     The r.
 		/// </value>
-		public Spell.Skillshot R { get; set; }
+		public static Spell.Skillshot R { get; set; }
 
 		/// <summary>
 		///     Gets or sets the w.
@@ -139,7 +139,7 @@ namespace MoonDraven
 		/// <value>
 		///     The w.
 		/// </value>
-		public Spell.Active W { get; set; }
+		public static Spell.Active W { get; set; }
 
 		#endregion
 
@@ -152,13 +152,13 @@ namespace MoonDraven
 
         #endregion
 
-        #region Public Methods and Operators
+        #region public static Methods and Operators
 
         private static void GameOnOnGameLoad(EventArgs args)
         {
             if (ObjectManager.Player.BaseSkinName == "Draven")
             {
-                new MoonDraven().Load();
+                Load();
             }
         }
 
@@ -167,30 +167,33 @@ namespace MoonDraven
             Loading.OnLoadingComplete += GameOnOnGameLoad;
         }
 
+        public static bool canMove = true;
+        public static bool canAttack = true;
+
         /// <summary>
         ///     Loads this instance.
         /// </summary>
-        public void Load()
+        public static void Load()
 		{
 			// Create spells
-			this.Q = new Spell.Active(SpellSlot.Q, (uint)Player.GetAutoAttackRange());
-			this.W = new Spell.Active(SpellSlot.W);
-			this.E = new Spell.Skillshot(SpellSlot.E, 1050, EloBuddy.SDK.Enumerations.SkillShotType.Linear, 250, 1400, 130);
-			this.R = new Spell.Skillshot(SpellSlot.R, int.MaxValue, EloBuddy.SDK.Enumerations.SkillShotType.Linear, 400, 200, 160);
+			Q = new Spell.Active(SpellSlot.Q, (uint)Player.GetAutoAttackRange());
+			W = new Spell.Active(SpellSlot.W);
+			E = new Spell.Skillshot(SpellSlot.E, 1050, EloBuddy.SDK.Enumerations.SkillShotType.Linear, 250, 1400, 130);
+			R = new Spell.Skillshot(SpellSlot.R, int.MaxValue, EloBuddy.SDK.Enumerations.SkillShotType.Linear, 400, 200, 160);
 
-			this.QReticles = new List<QRecticle>();
+			QReticles = new List<QRecticle>();
 
-			this.CreateMenu();
+			CreateMenu();
 
             Chat.Print("<font color=\"#7CFC00\"><b>MoonDraven:</b></font> Loaded");
 
-			//Obj_AI_Base.OnNewPath += this.Obj_AI_Base_OnNewPath;
-			GameObject.OnCreate += this.GameObjectOnOnCreate;
-			GameObject.OnDelete += this.GameObjectOnOnDelete;
-			Gapcloser.OnGapcloser += this.AntiGapcloserOnOnEnemyGapcloser;
-			Interrupter.OnInterruptableSpell += this.Interrupter2OnOnInterruptableTarget;
-			Drawing.OnDraw += this.DrawingOnOnDraw;
-			Game.OnUpdate += this.GameOnOnUpdate;
+			//Obj_AI_Base.OnNewPath += Obj_AI_Base_OnNewPath;
+			GameObject.OnCreate += GameObjectOnOnCreate;
+			GameObject.OnDelete += GameObjectOnOnDelete;
+			Gapcloser.OnGapcloser += AntiGapcloserOnOnEnemyGapcloser;
+			Interrupter.OnInterruptableSpell += Interrupter2OnOnInterruptableTarget;
+			Drawing.OnDraw += DrawingOnOnDraw;
+			Game.OnUpdate += GameOnOnUpdate;
 		}
 
 		#endregion
@@ -201,22 +204,22 @@ namespace MoonDraven
 		///     Called on an enemy gapcloser.
 		/// </summary>
 		/// <param name="gapcloser">The gapcloser.</param>
-		private void AntiGapcloserOnOnEnemyGapcloser(Obj_AI_Base sender, Gapcloser.GapcloserEventArgs gapcloser)
+		private static void AntiGapcloserOnOnEnemyGapcloser(Obj_AI_Base sender, Gapcloser.GapcloserEventArgs gapcloser)
 		{
-			if (!Getcheckboxvalue(MiscMenu, "UseEGapcloser") || !this.E.IsReady()
-				|| !gapcloser.Sender.IsValidTarget(this.E.Range))
+			if (!Getcheckboxvalue(MiscMenu, "UseEGapcloser") || !E.IsReady()
+				|| !gapcloser.Sender.IsValidTarget(E.Range))
 			{
 				return;
 			}
 
-			this.E.Cast(gapcloser.Sender);
+			E.Cast(gapcloser.Sender);
 		}
 
         public static bool catchingaxe;
 		/// <summary>
 		///     Catches the axe.
 		/// </summary>
-		private void CatchAxe()
+		private static void CatchAxe()
 		{
 			var catchOption = Getslidervalue(AxeMenu, "AxeMode");
 
@@ -225,29 +228,29 @@ namespace MoonDraven
 				|| catchOption == 2)
 			{
 				var bestReticle =
-					this.QReticles.Where(
+					QReticles.Where(
 						x =>
 						x.Object.Position.Distance(Game.CursorPos)
 						< Getslidervalue(AxeMenu, "CatchAxeRange"))
-						.OrderBy(x => x.Position.Distance(this.Player.ServerPosition))
+						.OrderBy(x => x.Position.Distance(Player.ServerPosition))
 						.ThenBy(x => x.Position.Distance(Game.CursorPos))
 						.ThenBy(x => x.ExpireTime)
 						.FirstOrDefault();
 
-				if (bestReticle != null && bestReticle.Object.Position.Distance(this.Player.ServerPosition) > 100)
+				if (bestReticle != null && bestReticle.Object.Position.Distance(Player.ServerPosition) > 100)
 				{
-					var eta = 1000 * (this.Player.Distance(bestReticle.Position) / this.Player.MoveSpeed);
+					var eta = 1000 * (Player.Distance(bestReticle.Position) / Player.MoveSpeed);
 					var expireTime = bestReticle.ExpireTime - Environment.TickCount;
 
 					if (eta >= expireTime && Getcheckboxvalue(AxeMenu, "UseWForQ"))
 					{
-						this.W.Cast();
+						W.Cast();
 					}
 
 					if (Getcheckboxvalue(AxeMenu, "DontCatchUnderTurret"))
 					{
 						// If we're under the turret as well as the axe, catch the axe
-						if (this.Player.IsUnderEnemyturret() && bestReticle.Object.Position.UnderTurret(true))
+						if (Player.IsUnderEnemyturret() && bestReticle.Object.Position.UnderTurret(true))
 						{
 							if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.None))
 							{								
@@ -255,7 +258,7 @@ namespace MoonDraven
                             }
 							else
 							{
-                                 if(!Player.Spellbook.IsAutoAttacking)
+
                                     Orbwalker.DisableMovement = true;
                                 Orbwalker.OrbwalkTo(bestReticle.Position);
                             }
@@ -264,13 +267,13 @@ namespace MoonDraven
 						{
 							if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.None))
 							{
-                                if (!Player.Spellbook.IsAutoAttacking)
+
                                     Orbwalker.DisableMovement = true;
                                 EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, bestReticle.Position);
                             }
 							else
 							{
-                                if (!Player.Spellbook.IsAutoAttacking)
+
                                     Orbwalker.DisableMovement = true;
                                 Orbwalker.OrbwalkTo(bestReticle.Position);
 							}
@@ -280,13 +283,13 @@ namespace MoonDraven
 					{
 						if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.None))
 						{
-                            if (!Player.Spellbook.IsAutoAttacking)
+
                                 Orbwalker.DisableMovement = true;
                             EloBuddy.Player.IssueOrder(GameObjectOrder.MoveTo, bestReticle.Position);                         
                         }
 						else
 						{
-                            if (!Player.Spellbook.IsAutoAttacking)
+
                                 Orbwalker.DisableMovement = true;
                             Orbwalker.OrbwalkTo(bestReticle.Position);
 						}
@@ -308,9 +311,9 @@ namespace MoonDraven
 		/// <summary>
 		///     Does the combo.
 		/// </summary>
-		private void Combo()
+		private static void Combo()
 		{
-			var target = TargetSelector.GetTarget(this.E.Range, DamageType.Physical);
+			var target = TargetSelector.GetTarget(E.Range, DamageType.Physical);
 
 			if (!target.IsValidTarget())
 			{
@@ -322,34 +325,34 @@ namespace MoonDraven
             var useE = Getcheckboxvalue(ComboMenu, "UseECombo");
             var useR = Getcheckboxvalue(ComboMenu, "UseRCombo");
 
-            if (useQ && this.QCount < Getslidervalue(AxeMenu, "MaxAxes") - 1 && this.Q.IsReady()
-				&& Player.IsInAutoAttackRange(target) && !this.Player.Spellbook.IsAutoAttacking)
+            if (useQ && QCount < Getslidervalue(AxeMenu, "MaxAxes") - 1 && Q.IsReady()
+				&& Player.IsInAutoAttackRange(target) && !Player.Spellbook.IsAutoAttacking)
 			{
-				this.Q.Cast();
+				Q.Cast();
 			}
 
-			if (useW && this.W.IsReady()
-				&& this.ManaPercent > Getslidervalue(MiscMenu, "UseWManaPercent"))
+			if (useW && W.IsReady()
+				&& ManaPercent > Getslidervalue(MiscMenu, "UseWManaPercent"))
 			{
 				if (Getcheckboxvalue(MiscMenu, "UseWSetting"))
 				{
-					this.W.Cast();
+					W.Cast();
 				}
 				else
 				{
-					if (!this.Player.HasBuff("dravenfurybuff"))
+					if (!Player.HasBuff("dravenfurybuff"))
 					{
-						this.W.Cast();
+						W.Cast();
 					}
 				}
 			}
 
-			if (useE && this.E.IsReady())
+			if (useE && E.IsReady())
 			{
-				this.E.Cast(target);
+				E.Cast(target);
 			}
 
-			if (!useR || !this.R.IsReady())
+			if (!useR || !R.IsReady())
 			{
 				return;
 			}
@@ -359,19 +362,19 @@ namespace MoonDraven
 				HeroManager.Enemies.Where(x => x.IsValidTarget(2000))
 					.FirstOrDefault(
 						x =>
-						this.Player.GetSpellDamage(x, SpellSlot.R) * 2 > x.Health
-						&& (!Player.IsInAutoAttackRange(x) || this.Player.CountEnemiesInRange(this.E.Range) > 2));
+						Player.GetSpellDamage(x, SpellSlot.R) * 2 > x.Health
+						&& (!Player.IsInAutoAttackRange(x) || Player.CountEnemiesInRange(E.Range) > 2));
 
 			if (killableTarget != null)
 			{
-				this.R.Cast(killableTarget);
+				R.Cast(killableTarget);
 			}
 		}
 
         private static Menu ComboMenu, HarassMenu, AxeMenu, LaneClearMenu, MiscMenu, DrawingsMenu;
-		private void CreateMenu()
+		private static void CreateMenu()
 		{
-			this.Menu = MainMenu.AddMenu("MoonDraven", "cmMoonDraven");
+			Menu = MainMenu.AddMenu("MoonDraven", "cmMoonDraven");
 
 		    ComboMenu = Menu.AddSubMenu("Combo");
 		    ComboMenu.Add("UseQCombo", new CheckBox("Use Q"));
@@ -439,7 +442,7 @@ namespace MoonDraven
         ///     Called when the game draws itself.
         /// </summary>
         /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
-        private void DrawingOnOnDraw(EventArgs args)
+        private static void DrawingOnOnDraw(EventArgs args)
 		{
 			var drawE = Getcheckboxvalue(DrawingsMenu, "DrawE");
 			var drawAxeLocation = Getcheckboxvalue(DrawingsMenu, "DrawAxeLocation");
@@ -449,17 +452,17 @@ namespace MoonDraven
 			{
 				Drawing.DrawCircle(
 					ObjectManager.Player.Position,
-					this.E.Range,
-					this.E.IsReady() ? Color.Aqua : Color.Red);
+					E.Range,
+					E.IsReady() ? Color.Aqua : Color.Red);
 			}
 
 			if (drawAxeLocation)
 			{
 				var bestAxe =
-					this.QReticles.Where(
+					QReticles.Where(
 						x =>
 						x.Position.Distance(Game.CursorPos) < Getslidervalue(AxeMenu, "CatchAxeRange"))
-						.OrderBy(x => x.Position.Distance(this.Player.ServerPosition))
+						.OrderBy(x => x.Position.Distance(Player.ServerPosition))
 						.ThenBy(x => x.Position.Distance(Game.CursorPos))
 						.FirstOrDefault();
 
@@ -469,7 +472,7 @@ namespace MoonDraven
 				}
 
 				foreach (var axe in
-					this.QReticles.Where(x => x.Object.NetworkId != (bestAxe == null ? 0 : bestAxe.Object.NetworkId)))
+					QReticles.Where(x => x.Object.NetworkId != (bestAxe == null ? 0 : bestAxe.Object.NetworkId)))
 				{
                     Drawing.DrawCircle(axe.Position, 120, Color.Yellow);
 				}
@@ -489,15 +492,15 @@ namespace MoonDraven
 		/// </summary>
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
-		private void GameObjectOnOnCreate(GameObject sender, EventArgs args)
+		private static void GameObjectOnOnCreate(GameObject sender, EventArgs args)
 		{
 			if (!sender.Name.Contains("Draven_Base_Q_reticle_self.troy"))
 			{
 				return;
 			}
 
-			this.QReticles.Add(new QRecticle(sender, Environment.TickCount + 1800));
-			Core.DelayAction(() => this.QReticles.RemoveAll(x => x.Object.NetworkId == sender.NetworkId), 1800);
+			QReticles.Add(new QRecticle(sender, Environment.TickCount + 1800));
+			Core.DelayAction(() => QReticles.RemoveAll(x => x.Object.NetworkId == sender.NetworkId), 1800);
 		}
 
 		/// <summary>
@@ -505,65 +508,76 @@ namespace MoonDraven
 		/// </summary>
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
-		private void GameObjectOnOnDelete(GameObject sender, EventArgs args)
+		private static void GameObjectOnOnDelete(GameObject sender, EventArgs args)
 		{
 			if (!sender.Name.Contains("Draven_Base_Q_reticle_self.troy"))
 			{
 				return;
 			}
 
-			this.QReticles.RemoveAll(x => x.Object.NetworkId == sender.NetworkId);
+			QReticles.RemoveAll(x => x.Object.NetworkId == sender.NetworkId);
 		}
 
 		/// <summary>
 		///     Called when the game updates.
 		/// </summary>
 		/// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
-		private void GameOnOnUpdate(EventArgs args)
+		private static void GameOnOnUpdate(EventArgs args)
 		{
-			this.QReticles.RemoveAll(x => x.Object.IsDead);
+			QReticles.RemoveAll(x => x.Object.IsDead);
+            foreach (var a in QReticles)
+            {
+                if (!a.CanOrbwalkWithUserDelay)
+                {
+                    canMove = false;
+                }
+                if (!a.CanAttack)
+                {
+                    canAttack = false;
+                }
+            }
 
-			this.CatchAxe();
+            CatchAxe();
 
-			if (this.W.IsReady() && Getcheckboxvalue(MiscMenu, "UseWSlow") && this.Player.HasBuffOfType(BuffType.Slow))
+			if (W.IsReady() && Getcheckboxvalue(MiscMenu, "UseWSlow") && Player.HasBuffOfType(BuffType.Slow))
 			{
-				this.W.Cast();
+				W.Cast();
 			}
 
 			switch (Orbwalker.ActiveModesFlags)
 			{
 			case Orbwalker.ActiveModes.Harass:
-				this.Harass();
+				Harass();
 				break;
 			case Orbwalker.ActiveModes.LaneClear:
-				this.LaneClear();
+				LaneClear();
 				break;
 			case Orbwalker.ActiveModes.Combo:
-				this.Combo();
+				Combo();
 				break;
 			}
 
 			if (Getkeybindvalue(HarassMenu, "UseHarassToggle"))
 			{
-				this.Harass();
+				Harass();
 			}
 		}
 
 		/// <summary>
 		///     Harasses the enemy.
 		/// </summary>
-		private void Harass()
+		private static void Harass()
 		{
-			var target = TargetSelector.GetTarget(this.E.Range, DamageType.Physical);
+			var target = TargetSelector.GetTarget(E.Range, DamageType.Physical);
 
 			if (!target.IsValidTarget())
 			{
 				return;
 			}
 
-			if (Getcheckboxvalue(HarassMenu, "UseEHarass") && this.E.IsReady())
+			if (Getcheckboxvalue(HarassMenu, "UseEHarass") && E.IsReady())
 			{
-				this.E.Cast(target);
+				E.Cast(target);
 			}
 		}
 
@@ -572,70 +586,70 @@ namespace MoonDraven
 		/// </summary>
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="Interrupter2.InterruptableTargetEventArgs" /> instance containing the event data.</param>
-		private void Interrupter2OnOnInterruptableTarget(
+		private static void Interrupter2OnOnInterruptableTarget(
 			Obj_AI_Base sender,
 			Interrupter.InterruptableSpellEventArgs args)
 		{
-			if (!Getcheckboxvalue(MiscMenu, "UseEInterrupt") || !this.E.IsReady() || !sender.IsValidTarget(this.E.Range))
+			if (!Getcheckboxvalue(MiscMenu, "UseEInterrupt") || !E.IsReady() || !sender.IsValidTarget(E.Range))
 			{
 				return;
 			}
 
 			if (args.DangerLevel == DangerLevel.Medium || args.DangerLevel == DangerLevel.High)
 			{
-				this.E.Cast(sender);
+				E.Cast(sender);
 			}
 		}
 
 		/// <summary>
 		///     Clears the lane of minions.
 		/// </summary>
-		private void LaneClear()
+		private static void LaneClear()
 		{
 			var useQ = Getcheckboxvalue(LaneClearMenu, "UseQWaveClear");
 			var useW = Getcheckboxvalue(LaneClearMenu, "UseWWaveClear");
 			var useE = Getcheckboxvalue(LaneClearMenu, "UseEWaveClear");
 
-			if (this.ManaPercent < Getslidervalue(LaneClearMenu, "WaveClearManaPercent"))
+			if (ManaPercent < Getslidervalue(LaneClearMenu, "WaveClearManaPercent"))
 			{
 				return;
 			}
 
-			if (useQ && this.QCount < Getslidervalue(AxeMenu, "MaxAxes") - 1 && this.Q.IsReady()
-				&& Orbwalker.GetTarget() is Obj_AI_Minion && !this.Player.Spellbook.IsAutoAttacking
-				&& !this.Player.Spellbook.IsAutoAttacking)
+			if (useQ && QCount < Getslidervalue(AxeMenu, "MaxAxes") - 1 && Q.IsReady()
+				&& Orbwalker.GetTarget() is Obj_AI_Minion && !Player.Spellbook.IsAutoAttacking
+				&& !Player.Spellbook.IsAutoAttacking)
 			{
-				this.Q.Cast();
+				Q.Cast();
 			}
 
-			if (useW && this.W.IsReady()
-				&& this.ManaPercent > Getslidervalue(MiscMenu, "UseWManaPercent"))
+			if (useW && W.IsReady()
+				&& ManaPercent > Getslidervalue(MiscMenu, "UseWManaPercent"))
 			{
 				if (Getcheckboxvalue(MiscMenu, "UseWSetting"))
 				{
-					this.W.Cast();
+					W.Cast();
 				}
 				else
 				{
-					if (!this.Player.HasBuff("dravenfurybuff"))
+					if (!Player.HasBuff("dravenfurybuff"))
 					{
-						this.W.Cast();
+						W.Cast();
 					}
 				}
 			}
 
-			if (!useE || !this.E.IsReady())
+			if (!useE || !E.IsReady())
 			{
 				return;
 			}
 		    var bestLocation =
 		        EntityManager.MinionsAndMonsters.GetLineFarmLocation(
 		            EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position,
-		                this.E.Range), E.Width, (int) E.Range);
+		                E.Range), E.Width, (int) E.Range);
 
 			if (bestLocation.HitNumber > 1)
 			{
-				this.E.Cast(bestLocation.CastPosition);
+				E.Cast(bestLocation.CastPosition);
 			}
 		}
 
@@ -644,14 +658,14 @@ namespace MoonDraven
 		/// </summary>
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="GameObjectNewPathEventArgs" /> instance containing the event data.</param>
-		private void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
+		private static void Obj_AI_Base_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
 		{
 			if (!sender.IsMe)
 			{
 				return;
 			}
 
-			this.CatchAxe();
+			CatchAxe();
 		}
 
 		#endregion
@@ -670,13 +684,13 @@ namespace MoonDraven
 			/// <param name="expireTime">The expire time.</param>
 			public QRecticle(GameObject rectice, int expireTime)
 			{
-				this.Object = rectice;
-				this.ExpireTime = expireTime;
+				Object = rectice;
+				ExpireTime = expireTime;
 			}
 
 			#endregion
 
-			#region Public Properties
+			#region public static Properties
 
 			/// <summary>
 			///     Gets or sets the expire time.
@@ -693,18 +707,36 @@ namespace MoonDraven
 			///     The object.
 			/// </value>
 			public GameObject Object { get; set; }
+            public float TimeLeft
+            {
+                get
+                {
+                    if (MissileIsValid || ReticleIsValid)
+                        return LimitTime - (Game.Time - this.StartTime);//2 * Extensions.Distance(this.Reticle.Position, this.Missile.Position) / this.Speed; //
+                    return float.MaxValue;
+                }
 
-			/// <summary>
-			///     Gets the position.
-			/// </summary>
-			/// <value>
-			///     The position.
-			/// </value>
-			public Vector3 Position
+            }
+            public MissileClient Missile = null;
+            public bool MissileIsValid
+            {
+                get
+                {
+                    return Missile != null && Missile.IsValid;
+                }
+            }
+
+            /// <summary>
+            ///     Gets the position.
+            /// </summary>
+            /// <value>
+            ///     The position.
+            /// </value>
+            public Vector3 Position
 			{
 				get
 				{
-					return this.Object.Position;
+					return Object.Position;
 				}
 			}
 
